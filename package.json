@@ -38,8 +38,8 @@
     "host": "https://www.npmjs.com/package/aerospike"
   },
   "scripts": {
-    "preinstall": "npm install @mapbox/node-pre-gyp",
-    "install": "npm run build",
+    "preinstall": "npm install @mapbox/node-pre-gyp && (git submodule update --init --recursive 2>/dev/null || echo 'Skipping submodule init (not a git clone or already initialized)')",
+    "install": "./scripts/install-with-c-client.sh",
     "build": "node-pre-gyp install --fallback-to-build --addon_version=$(node -p \"require('./package.json').version\")",
     "test-prereq": "cd ts-test; npm install ..; npm i --save-dev @types/jest; npm i --save-dev @types/chai; cd ..;",
     "test": "cd ts-test; npx tsc ; cp tests/udf.lua dist/udf.lua ; cp tests/dyn_config*.yml dist/; mocha dist/${npm_config_testfile:-} ",
