@@ -3,6 +3,13 @@
 # Smart installer that only builds C client when building from source
 ################################################################################
 
+# Get the absolute path to the package root (where this script's parent dir is)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGE_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# Ensure we're in the package root
+cd "${PACKAGE_ROOT}"
+
 # First, try to install pre-built binaries
 node-pre-gyp install --addon_version=$(node -p "require('./package.json').version") 2>/dev/null
 
