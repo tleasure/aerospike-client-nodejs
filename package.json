@@ -38,7 +38,8 @@
     "host": "https://www.npmjs.com/package/aerospike"
   },
   "scripts": {
-    "preinstall": "npm install @mapbox/node-pre-gyp && (git submodule update --init --recursive 2>/dev/null || echo 'Skipping submodule init (not a git clone or already initialized)')",
+    "prepare": "(git submodule update --init --recursive 2>/dev/null || echo 'Skipping submodule init') && (husky install 2>/dev/null || echo 'Skipping husky')",
+    "preinstall": "npm install @mapbox/node-pre-gyp",
     "install": "./scripts/install-with-c-client.sh",
     "build": "node-pre-gyp install --fallback-to-build --addon_version=$(node -p \"require('./package.json').version\")",
     "test-prereq": "cd ts-test; npm install ..; npm i --save-dev @types/jest; npm i --save-dev @types/chai; cd ..;",
@@ -55,7 +56,6 @@
     "cppcheck": "cppcheck --quiet --enable=warning,style -I src/include src/main/",
     "valgrind": "cd ts-test; npx tsc ; cp tests/udf.lua dist/udf.lua ; cp tests/dyn_config*.yml dist/; valgrind node ./node_modules/mocha/bin/_mocha -R dot -g '#slow' -i dist/${npm_config_testfile:-}",
     "gdb": "cd ts-test;  npx tsc ; cp tests/udf.lua dist/udf.lua ; cp tests/dyn_config*.yml dist/; gdb --args node ./node_modules/mocha/bin/_mocha -R dot -g '#slow' -i dist/${npm_config_testfile:-}",
-    "prepare": "husky install",
     "removeExtraBinaries": "node ./scripts/prebuiltBinding.js"
   },
   "dependencies": {
@@ -92,6 +92,7 @@
   "files": [
     "aerospike-client-c.ini",
     "aerospike-client-c.sha256",
+    "aerospike-client-c/",
     "binding.gyp",
     "benchmarks/",
     "examples/",

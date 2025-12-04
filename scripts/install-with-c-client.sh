@@ -15,6 +15,14 @@ fi
 # Pre-built binaries not available, need to build from source
 echo "Pre-built binaries not available, building from source..."
 
+# Ensure submodules are initialized (critical for GitHub installs)
+if [ ! -f "aerospike-client-c/Makefile" ]; then
+    echo "Initializing git submodules..."
+    git submodule update --init --recursive 2>/dev/null || {
+        echo "Warning: Could not initialize submodules (not a git repo or already initialized)"
+    }
+fi
+
 # Build C client first
 echo "Building Aerospike C client..."
 ./scripts/build-c-client.sh || {
