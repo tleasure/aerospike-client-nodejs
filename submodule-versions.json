@@ -1,0 +1,21 @@
+{
+  "aerospike-client-c": {
+    "commit": "9ce78e53aace39d4767633b2c204aa056baf2937",
+    "url": "https://github.com/aerospike/aerospike-client-c",
+    "submodules": {
+      "modules/common": {
+        "commit": "814081ba9145d7d95266721ea5ba3d15a228b578",
+        "url": "https://github.com/aerospike/aerospike-common"
+      },
+      "modules/lua": {
+        "commit": "6443185167c77adcc8552a3fee7edab7895db1a9",
+        "url": "https://github.com/aerospike/lua"
+      },
+      "modules/mod-lua": {
+        "commit": "0bd5641cb57e3d2f98a74f2e8e82deb50ba3f2d8",
+        "url": "https://github.com/aerospike/aerospike-mod-lua"
+      }
+    }
+  }
+}
+
