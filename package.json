@@ -93,6 +93,7 @@
     "aerospike-client-c.ini",
     "aerospike-client-c.sha256",
     "aerospike-client-c/",
+    "submodule-versions.json",
     "binding.gyp",
     "benchmarks/",
     "examples/",

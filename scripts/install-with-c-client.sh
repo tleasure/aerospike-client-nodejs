@@ -30,9 +30,21 @@ if [ ! -f "aerospike-client-c/Makefile" ]; then
     if git submodule update --init --recursive 2>/dev/null; then
         echo "Initialized git submodules"
     else
-        # Not a git repo or submodules not available - download from GitHub
+        # Not a git repo or submodules not available - download from GitHub using version config
         echo "Downloading Aerospike C client from GitHub..."
-        C_CLIENT_VERSION="9ce78e53aace39d4767633b2c204aa056baf2937"  # Match the submodule commit
+        
+        # Read versions from config file
+        if [ ! -f "submodule-versions.json" ]; then
+            echo "ERROR: submodule-versions.json not found"
+            exit 1
+        fi
+        
+        C_CLIENT_VERSION=$(node -p "require('./submodule-versions.json')['aerospike-client-c'].commit")
+        COMMON_VERSION=$(node -p "require('./submodule-versions.json')['aerospike-client-c'].submodules['modules/common'].commit")
+        LUA_VERSION=$(node -p "require('./submodule-versions.json')['aerospike-client-c'].submodules['modules/lua'].commit")
+        MODLUA_VERSION=$(node -p "require('./submodule-versions.json')['aerospike-client-c'].submodules['modules/mod-lua'].commit")
+        
+        echo "Using C client: $C_CLIENT_VERSION"
         
         # Remove existing aerospike-client-c directory if it exists
         rm -rf aerospike-client-c
@@ -47,32 +59,32 @@ if [ ! -f "aerospike-client-c/Makefile" ]; then
             exit 1
         }
         mv "aerospike-client-c-${C_CLIENT_VERSION}" aerospike-client-c
-        rm /tmp/aerospike-client-c.tar.gz
+        rm -f /tmp/aerospike-client-c.tar.gz
         
-        # Download submodules too
+        # Download C client submodules using exact versions
         echo "Downloading C client submodules..."
         cd aerospike-client-c
         
-        # Download common module
-        curl -L "https://github.com/aerospike/aerospike-common/archive/814081ba9145d7d95266721ea5ba3d15a228b578.tar.gz" -o /tmp/common.tar.gz
+        echo "  - aerospike-common: $COMMON_VERSION"
+        curl -L "https://github.com/aerospike/aerospike-common/archive/${COMMON_VERSION}.tar.gz" -o /tmp/common.tar.gz
         mkdir -p modules/common
         tar -xzf /tmp/common.tar.gz -C modules/common --strip-components=1
-        rm /tmp/common.tar.gz
+        rm -f /tmp/common.tar.gz
         
-        # Download lua module
-        curl -L "https://github.com/aerospike/lua/archive/6443185167c77adcc8552a3fee7edab7895db1a9.tar.gz" -o /tmp/lua.tar.gz
+        echo "  - lua: $LUA_VERSION"
+        curl -L "https://github.com/aerospike/lua/archive/${LUA_VERSION}.tar.gz" -o /tmp/lua.tar.gz
         mkdir -p modules/lua
         tar -xzf /tmp/lua.tar.gz -C modules/lua --strip-components=1
-        rm /tmp/lua.tar.gz
+        rm -f /tmp/lua.tar.gz
         
-        # Download mod-lua module
-        curl -L "https://github.com/aerospike/aerospike-mod-lua/archive/0bd5641cb57e3d2f98a74f2e8e82deb50ba3f2d8.tar.gz" -o /tmp/mod-lua.tar.gz
+        echo "  - aerospike-mod-lua: $MODLUA_VERSION"
+        curl -L "https://github.com/aerospike/aerospike-mod-lua/archive/${MODLUA_VERSION}.tar.gz" -o /tmp/mod-lua.tar.gz
         mkdir -p modules/mod-lua
         tar -xzf /tmp/mod-lua.tar.gz -C modules/mod-lua --strip-components=1
-        rm /tmp/mod-lua.tar.gz
+        rm -f /tmp/mod-lua.tar.gz
         
         cd ..
-        echo "C client downloaded successfully"
+        echo "C client downloaded successfully with exact versions"
     fi
 fi
 
